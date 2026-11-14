@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>המילים של מיה · Unit 1</title>
+<style>
+  :root{
+    --bg1:#fdf2f8; --bg2:#eef2ff;
+    --ink:#1e1b4b; --muted:#6b7280;
+    --accent:#7c3aed; --accent2:#db2777;
+    --ok:#059669; --no:#e11d48;
+    --card:#ffffff; --line:#e5e7eb;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Rounded","Segoe UI",Arial,sans-serif;
+    color:var(--ink);
+    background:linear-gradient(160deg,var(--bg1),var(--bg2));
+    padding:calc(env(safe-area-inset-top) + 10px) 16px calc(env(safe-area-inset-bottom) + 12px);
+    display:flex;flex-direction:column;min-height:100dvh;overflow-x:hidden;
+    -webkit-user-select:none;user-select:none;
+  }
+  header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  h1{font-size:20px;margin:0;font-weight:800}
+  h1 small{font-weight:600;color:var(--accent);font-size:14px;margin-inline-start:6px}
+  .tabs{display:flex;background:#fff;border-radius:999px;padding:3px;border:1px solid var(--line)}
+  .tabs button{border:0;background:none;padding:7px 12px;border-radius:999px;font-size:14px;font-weight:700;color:var(--muted)}
+  .tabs button.on{background:var(--ink);color:#fff}
+  .bar{height:8px;background:#fff;border-radius:99px;margin:12px 0 4px;overflow:hidden;border:1px solid var(--line)}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .3s}
+  .meta{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);font-weight:600}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 2px}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;font-size:13px;font-weight:700;color:var(--ink)}
+  .chip.on{border-color:var(--accent);color:var(--accent);background:#f5f3ff}
+  .stage{flex:1;display:flex;align-items:center;justify-content:center;perspective:1200px;padding:14px 0;min-height:340px}
+  .card{position:relative;width:100%;max-width:440px;height:min(56dvh,420px);transform-style:preserve-3d;transition:transform .45s cubic-bezier(.3,.7,.3,1)}
+  .card.flip{transform:rotateY(180deg)}
+  .card.gone-r{transition:transform .25s ease-in,opacity .25s;transform:translateX(120%) rotate(12deg);opacity:0}
+  .card.gone-l{transition:transform .25s ease-in,opacity .25s;transform:translateX(-120%) rotate(-12deg);opacity:0}
+  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--card);border-radius:28px;
+        box-shadow:0 18px 40px -18px rgba(76,29,149,.35),0 2px 0 rgba(0,0,0,.03);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+  .back{transform:rotateY(180deg)}
+  .pos{position:absolute;top:18px;inset-inline-start:18px;font-size:12px;font-weight:800;color:var(--accent);background:#f5f3ff;padding:5px 10px;border-radius:999px}
+  .en{direction:ltr;font-size:clamp(34px,10vw,52px);font-weight:800;letter-spacing:-.5px;line-height:1.1}
+  .he{font-size:clamp(30px,9vw,44px);font-weight:800;line-height:1.2}
+  .hint{position:absolute;bottom:16px;font-size:12px;color:var(--muted);font-weight:600}
+  .ex{direction:ltr;margin-top:18px;font-size:17px;color:#374151;line-height:1.45;max-width:340px}
+  .ex b{color:var(--accent2)}
+  .small-en{direction:ltr;font-size:22px;font-weight:700;color:var(--accent);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+  .spk{margin-top:18px;display:flex;gap:10px;justify-content:center}
+  .spk button{border:0;border-radius:999px;background:var(--ink);color:#fff;font-size:16px;font-weight:700;padding:12px 18px;display:flex;align-items:center;gap:6px}
+  .spk button.slow{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+  .mini{border:0;background:#f5f3ff;color:var(--accent);border-radius:999px;width:36px;height:36px;font-size:17px}
+  .actions{display:flex;gap:12px;max-width:440px;margin:0 auto;width:100%}
+  .actions button{flex:1;border:0;border-radius:20px;padding:18px 10px;font-size:18px;font-weight:800;color:#fff}
+  .b-no{background:var(--no)} .b-ok{background:var(--ok)}
+  .nav{display:flex;justify-content:center;gap:18px;margin-top:10px}
+  .nav button{border:0;background:none;color:var(--muted);font-size:14px;font-weight:700;padding:6px}
+  .done{display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px}
+  .done .big{font-size:64px}
+  .done h2{margin:0;font-size:26px}
+  .done p{margin:0;color:var(--muted);font-weight:600}
+  .done button{border:0;border-radius:18px;padding:16px 22px;font-size:17px;font-weight:800;color:#fff;background:var(--accent);width:100%;max-width:320px}
+  .done button.alt{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+  .list{display:none;flex:1;margin-top:10px}
+  .search{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:16px;margin-bottom:10px;background:#fff}
+  .row{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:8px;border:1px solid var(--line)}
+  .row .w{flex:1;direction:ltr;text-align:right;font-weight:800;font-size:17px}
+  .row .w em{font-style:normal;font-size:12px;color:var(--accent);font-weight:700;margin-left:6px}
+  .row .t{flex:1;font-weight:600;font-size:16px;text-align:left;color:#374151}
+  .row.known{border-color:#a7f3d0;background:#f0fdf4}
+  .row.hard{border-color:#fecdd3;background:#fff1f2}
+</style>
+</head>
+<body>
+<header>
+  <h1><a href="../" style="color:inherit;text-decoration:none">המילים של מיה</a><small>Unit 1</small></h1>
+  <div class="tabs">
+    <button id="tabCards" class="on">כרטיסיות</button>
+    <button id="tabList">רשימה</button>
+  </div>
+</header>
+<section id="cardsView" style="display:flex;flex-direction:column;flex:1">
+  <div class="bar"><i id="barFill"></i></div>
+  <div class="meta"><span id="metaLeft"></span><span id="metaRight"></span></div>
+  <div class="chips">
+    <button class="chip on" id="dirEn">אנגלית ← עברית</button>
+    <button class="chip" id="dirHe">עברית ← אנגלית</button>
+    <button class="chip" id="autoSpk">🔊 הקראה אוטומטית</button>
+    <button class="chip" id="hardOnly">רק הקשות</button>
+  </div>
+  <div class="stage" id="stage">
+    <div class="card" id="card">
+      <div class="face front" id="front"></div>
+      <div class="face back" id="back"></div>
+    </div>
+  </div>
+  <div class="actions" id="actions">
+    <button class="b-no" id="btnNo">✗ עוד לא</button>
+    <button class="b-ok" id="btnOk">✓ יודעת!</button>
+  </div>
+  <div class="nav">
+    <button id="btnPrev">→ הקודמת</button>
+    <button id="btnShuffle">🔀 ערבוב</button>
+    <button id="btnReset">↺ מההתחלה</button>
+  </div>
+  <div class="done" id="done">
+    <div class="big">🎉</div>
+    <h2 id="doneTitle">כל הכבוד מיה!</h2>
+    <p id="doneSub"></p>
+    <button id="againHard">תרגול רק של הקשות</button>
+    <button class="alt" id="againAll">סבב חדש על כל המילים</button>
+  </div>
+</section>
+<section class="list" id="listView">
+  <input class="search" id="search" placeholder="חיפוש מילה..." autocomplete="off">
+  <div id="rows"></div>
+</section>
+<script>
+const UNIT_ID = "teamwork-unit1";
+const WORDS = [
+ ["according to","","לפי","According to the map, the river is near."],
+ ["across","","מעבר","The bridge goes across the river."],
+ ["activity","","פעילות","Dancing is my favorite activity."],
+ ["amaze","","להדהים","Her dancing will amaze you."],
+ ["amazing","","מדהים","The show was amazing!"],
+ ["any","","איזשהו, כל","Do you have any questions?"],
+ ["anybody","","כל אחד","Can anybody help me?"],
+ ["around here","","כאן בסביבה","Is there a park around here?"],
+ ["band","","להקה","My brother plays in a band."],
+ ["bowl","","קערה","I eat soup from a bowl."],
+ ["bridge","","גשר","We walked over the bridge."],
+ ["brush","n","מברשת","I need a new hair brush."],
+ ["brush","v","להבריש, לצחצח","I brush my teeth every morning."],
+ ["careful","","זהיר","Be careful, the floor is wet."],
+ ["certain","","בטוח","I am certain she is right."],
+ ["choice","","בחירה (ברירה)","It is your choice."],
+ ["club","","מועדון","She joined the art club."],
+ ["color","n","צבע","My favorite color is purple."],
+ ["color","v","לצבוע","Let's color the picture."],
+ ["comb","n","מסרק","Where is my comb?"],
+ ["comb","v","לסרק","I comb my hair before school."],
+ ["continue","","להמשיך","Please continue reading."],
+ ["danger","","סכנה","Stop! There is danger here."],
+ ["dangerous","","מסוכן","The road is dangerous at night."],
+ ["depend on","","להסתמך על","You can depend on me."],
+ ["directly","","ישירות","Come directly home after school."],
+ ["drive","n","נסיעה באוטו","We went for a drive to the beach."],
+ ["drive","v","לנהוג","My dad can drive a big car."],
+ ["English","","אנגלית","I study English at school."],
+ ["fall in love","","להתאהב","You will fall in love with this song."],
+ ["feed","","להאכיל","I feed the dog every day."],
+ ["fill in","","למלא","Fill in the form, please."],
+ ["fix","","לתקן","Can you fix my bike?"],
+ ["follow","","ללכת בעקבות","Follow me to the classroom."],
+ ["foreign","","זר (מחו\"ל)","She speaks a foreign language."],
+ ["form","","טופס","Write your name on the form."],
+ ["geography","","גיאוגרפיה","We learn about maps in geography."],
+ ["guide","","מדריך","Our guide showed us the city."],
+ ["help","n","עזרה","Thank you for your help."],
+ ["help","v","לעזור","Can you help me, please?"],
+ ["history","","היסטוריה","I like history lessons."],
+ ["I'd love to","","אשמח ל-","I'd love to come to your party!"],
+ ["imagine","","לדמיין, להאמין","Imagine you can fly."],
+ ["interested (in)","","מעוניין ב...","I am interested in art."],
+ ["job","","עבודה","My mom has a new job."],
+ ["join","","להצטרף","Do you want to join our team?"],
+ ["journey","","מסע","The journey took five hours."],
+ ["lemon","","לימון","I put lemon in my tea."],
+ ["list","","רשימה","Make a list of new words."],
+ ["love","n","אהבה","She has a love for music."],
+ ["love","v","לאהוב","I love to dance."],
+ ["lovely","","נעים, נחמד","What a lovely day!"],
+ ["main","","עיקרי","This is the main street."],
+ ["math","","מתמטיקה","We have math on Sunday."],
+ ["meal","","ארוחה","Dinner is my favorite meal."],
+ ["mountain","","הר","We climbed a high mountain."],
+ ["nation","","אומה","Israel is a small nation."],
+ ["next to","","ליד","The cat is next to the door."],
+ ["Nice to meet you.","","נעים להכיר","Hi, I'm Mia. Nice to meet you."],
+ ["office","","משרד","My dad works in an office."],
+ ["oil","","שמן","Add some oil to the pan."],
+ ["open","","פתוח","The shop is open today."],
+ ["pay","n","משכורת","The pay for this job is good."],
+ ["pay","v","לשלם","I pay for my ticket."],
+ ["pepper","","פלפל","Add salt and pepper."],
+ ["physics","","פיזיקה","Physics is a kind of science."],
+ ["point","n","נקודה, חוד","The pencil has a sharp point."],
+ ["point","v","להצביע","Point to the right answer."],
+ ["possible","","אפשרי","Is it possible to finish today?"],
+ ["prefer","","להעדיף","I prefer pizza to pasta."],
+ ["realize","","להבין, לקלוט","I didn't realize it was late."],
+ ["receive","","לקבל","I receive a gift on my birthday."],
+ ["river","","נהר","The river is long and wide."],
+ ["salt","","מלח","Pass me the salt, please."],
+ ["science","","מדעים","We do experiments in science."],
+ ["serve","","להגיש","They serve breakfast at eight."],
+ ["shake hands","","ללחוץ ידיים","We shake hands when we meet."],
+ ["sleep","n","שינה","I need eight hours of sleep."],
+ ["sleep","v","לישון","I sleep in my own room."],
+ ["team","","קבוצה","Our team won the game!"],
+ ["theater","","תאטרון","We saw a show at the theater."],
+ ["travel","n","נסיעה","Travel is fun in the summer."],
+ ["travel","v","לנסוע","I want to travel to London."],
+ ["typical","","טיפוסי","This is a typical school day."],
+ ["unusual","","יוצא דופן","That is an unusual color."],
+ ["variety","","מגוון","The shop has a variety of colors."],
+ ["village","","כפר","My grandma lives in a village."],
+ ["warm","","חם (התנהגות)","She has a warm smile."],
+ ["welcome","","להגיד שלום, לקבל בברכה","Welcome to our home!"],
+ ["What about ...?","","מה לגבי ...?","What about ice cream?"],
+ ["wide","","רחב","The road is very wide."],
+ ["work","n","עבודה","I have a lot of work today."],
+ ["work","v","לעבוד","My parents work every day."],
+ ["world","","עולם","I want to see the world."],
+ ["Would you like ...?","","האם תרצה ...?","Would you like some tea?"],
+ ["writing","","כתיבה","Her writing is beautiful."]
+].map(([en,pos,he,ex],i)=>({id:i,en,pos,he,ex}));
+
+const $=id=>document.getElementById(id);
+const POS={n:"שם עצם",v:"פועל"};
+const store={
+  get(k,d){try{const v=localStorage.getItem(UNIT_ID+":"+k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(UNIT_ID+":"+k,JSON.stringify(v))}catch(e){}}
+};
+const spoken=s=>s.replace(/\(.*?\)/g,"").replace(/\.\.\./g,"").replace(/\s+/g," ").trim();
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function highlight(ex,en){
+  const base=spoken(en).replace(/[?.]/g,"").trim();
+  if(!base) return esc(ex);
+  const root=base.split(" ")[0].replace(/e$/,"");
+  const re=new RegExp("\\b("+base.replace(/[.*+?^${}()|[\]\\']/g,"\\$&")+"|"+root+"\\w*)","i");
+  return esc(ex).replace(re,"<b>$1</b>");
+}
+let voice=null;
+function pickVoice(){
+  const vs=(window.speechSynthesis&&speechSynthesis.getVoices())||[];
+  const en=vs.filter(v=>/^en[-_]/i.test(v.lang));
+  voice=en.find(v=>/Samantha|Ava|Allison|Google US English/i.test(v.name))
+     ||en.find(v=>/en[-_]US/i.test(v.lang))||en[0]||null;
+}
+if(window.speechSynthesis){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
+function say(text,slow){
+  if(!window.speechSynthesis) return;
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(spoken(text));
+    u.lang="en-US"; if(voice) u.voice=voice;
+    u.rate=slow?0.5:0.85;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+let dir=store.get("dir","en");
+let auto=store.get("auto",true);
+let hardSet=new Set(store.get("hard",[]));
+let knownSet=new Set(store.get("known",[]));
+let queue=[], history=[], cur=null, flipped=false, onlyHard=false, roundTotal=0, roundOkFirst=0, missedThisRound=new Set();
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+function startRound(hard){
+  onlyHard=!!hard;
+  let ids=WORDS.map(w=>w.id);
+  if(onlyHard) ids=ids.filter(i=>hardSet.has(i));
+  if(!ids.length){ids=WORDS.map(w=>w.id);onlyHard=false}
+  queue=shuffle(ids); history=[]; roundTotal=ids.length; roundOkFirst=0; missedThisRound=new Set();
+  $("hardOnly").classList.toggle("on",onlyHard);
+  $("done").style.display="none"; $("stage").style.display=""; $("actions").style.display=""; document.querySelector(".nav").style.display="";
+  next();
+}
+function next(){
+  if(!queue.length){finish();return}
+  cur=WORDS[queue[0]]; flipped=false; render();
+  if(auto && dir==="en") setTimeout(()=>say(cur.en),250);
+}
+function render(){
+  const c=$("card"); c.className="card";
+  const w=cur, pos=w.pos?`<span class="pos">${POS[w.pos]}</span>`:"";
+  const enBlock=`<div class="en">${esc(w.en)}</div>
+     <div class="spk"><button data-say="w">🔊 הקשיבי</button><button class="slow" data-say="slow">🐢 לאט</button></div>`;
+  const heBlock=`<div class="he">${esc(w.he)}</div>`;
+  if(dir==="en"){
+    $("front").innerHTML=pos+enBlock+`<div class="hint">הקישי על הכרטיס כדי לראות פירוש</div>`;
+    $("back").innerHTML=pos+`<div class="small-en">${esc(w.en)} <button class="mini" data-say="w">🔊</button></div>`+heBlock+
+      `<div class="ex">${highlight(w.ex,w.en)}</div><div class="spk"><button class="slow" data-say="ex">🔊 משפט</button></div>`;
+  }else{
+    $("front").innerHTML=pos+heBlock+`<div class="hint">איך אומרים באנגלית? הקישי לבדיקה</div>`;
+    $("back").innerHTML=pos+enBlock+`<div class="ex">${highlight(w.ex,w.en)}</div>`;
+  }
+  const done=roundTotal-queue.length;
+  $("barFill").style.width=(roundTotal?done/roundTotal*100:0)+"%";
+  $("metaLeft").textContent=`נשארו ${queue.length} מתוך ${roundTotal}`;
+  $("metaRight").textContent=`✓ ${knownSet.size} · ✗ ${hardSet.size}`;
+}
+function flip(){
+  flipped=!flipped; $("card").classList.toggle("flip",flipped);
+  if(flipped && auto && dir==="he") setTimeout(()=>say(cur.en),250);
+}
+function answer(ok){
+  if(!cur) return;
+  const id=cur.id;
+  history.push(queue.slice());
+  if(ok){
+    if(!missedThisRound.has(id)) roundOkFirst++;
+    knownSet.add(id); if(!missedThisRound.has(id)) hardSet.delete(id);
+    queue.shift();
+  }else{
+    missedThisRound.add(id); hardSet.add(id); knownSet.delete(id);
+    queue.shift(); const pos=Math.min(queue.length,4); queue.splice(pos,0,id);
+  }
+  store.set("hard",[...hardSet]); store.set("known",[...knownSet]);
+  const c=$("card"); c.classList.add(ok?"gone-r":"gone-l");
+  setTimeout(next,230);
+}
+function prev(){ if(!history.length) return; queue=history.pop(); next(); }
+function finish(){
+  $("stage").style.display="none"; $("actions").style.display="none"; document.querySelector(".nav").style.display="none";
+  $("done").style.display="flex"; $("barFill").style.width="100%";
+  const missed=missedThisRound.size;
+  $("doneTitle").textContent= missed===0?"מושלם! 🌟 כל המילים בפעם הראשונה":"כל הכבוד מיה!";
+  $("doneSub").textContent=`ידעת ${roundOkFirst} מתוך ${roundTotal} כבר בפעם הראשונה` + (hardSet.size?` · ${hardSet.size} מילים שוות עוד תרגול`:"");
+  $("againHard").style.display=hardSet.size?"":"none";
+  $("metaLeft").textContent="סבב הושלם";
+}
+$("card").addEventListener("click",e=>{
+  const b=e.target.closest("[data-say]");
+  if(b){e.stopPropagation(); const k=b.dataset.say; say(k==="ex"?cur.ex:cur.en,k==="slow"); return;}
+  flip();
+});
+$("btnOk").onclick=()=>answer(true);
+$("btnNo").onclick=()=>answer(false);
+$("btnPrev").onclick=prev;
+$("btnShuffle").onclick=()=>{shuffle(queue);next()};
+$("btnReset").onclick=()=>startRound(false);
+$("againHard").onclick=()=>startRound(true);
+$("againAll").onclick=()=>startRound(false);
+$("hardOnly").onclick=()=>startRound(!onlyHard);
+function setDir(d){dir=d;store.set("dir",d);$("dirEn").classList.toggle("on",d==="en");$("dirHe").classList.toggle("on",d==="he");if(cur){flipped=false;render()}}
+$("dirEn").onclick=()=>setDir("en"); $("dirHe").onclick=()=>setDir("he");
+function setAuto(a){auto=a;store.set("auto",a);$("autoSpk").classList.toggle("on",a)}
+$("autoSpk").onclick=()=>{setAuto(!auto); if(auto&&cur) say(cur.en)};
+let sx=0,sy=0,dx=0,drag=false;
+const stage=$("stage");
+stage.addEventListener("touchstart",e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;dx=0;drag=true},{passive:true});
+stage.addEventListener("touchmove",e=>{if(!drag)return;dx=e.touches[0].clientX-sx;const dy=e.touches[0].clientY-sy;
+  if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>10){$("card").style.transform=`translateX(${dx}px) rotate(${dx/25}deg)`+(flipped?" rotateY(180deg)":"")}},{passive:true});
+stage.addEventListener("touchend",()=>{drag=false;$("card").style.transform="";
+  if(Math.abs(dx)>90){answer(dx>0)} dx=0});
+function renderList(){
+  const q=$("search").value.trim().toLowerCase();
+  $("rows").innerHTML=WORDS.filter(w=>!q||w.en.toLowerCase().includes(q)||w.he.includes(q)).map(w=>
+    `<div class="row ${hardSet.has(w.id)?"hard":knownSet.has(w.id)?"known":""}">
+      <button class="mini" data-id="${w.id}">🔊</button>
+      <div class="w">${esc(w.en)}${w.pos?`<em>${w.pos}</em>`:""}</div>
+      <div class="t">${esc(w.he)}</div></div>`).join("");
+}
+$("rows").addEventListener("click",e=>{const b=e.target.closest("[data-id]");if(b)say(WORDS[+b.dataset.id].en)});
+$("search").addEventListener("input",renderList);
+$("tabCards").onclick=()=>{$("tabCards").classList.add("on");$("tabList").classList.remove("on");$("cardsView").style.display="flex";$("listView").style.display="none"};
+$("tabList").onclick=()=>{$("tabList").classList.add("on");$("tabCards").classList.remove("on");$("cardsView").style.display="none";$("listView").style.display="block";renderList()};
+document.addEventListener("keydown",e=>{
+  if($("listView").style.display==="block")return;
+  if(e.key===" "){e.preventDefault();flip()}
+  else if(e.key==="ArrowRight")answer(true);
+  else if(e.key==="ArrowLeft")answer(false);
+  else if(e.key==="s")say(cur.en);
+});
+setDir(dir); setAuto(auto); startRound(false);
+</script>
+</body>
+</html>
